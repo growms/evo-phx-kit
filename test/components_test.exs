@@ -118,9 +118,74 @@ defmodule EvoPhxKit.ComponentsTest do
     assert html =~ "viewBox"
   end
 
+  test "login_page renders title and login button" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <Components.login_page title="My App" login_path="/auth/oidc" />
+      """)
+
+    assert html =~ "My App"
+    assert html =~ ~s(href="/auth/oidc")
+    assert html =~ "btn btn-primary"
+    assert html =~ "<svg"
+  end
+
+  test "login_page renders inner_block content" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <Components.login_page title="Test" login_path="/login">
+        <p>First paragraph</p>
+        <p>Second paragraph</p>
+      </Components.login_page>
+      """)
+
+    assert html =~ "First paragraph"
+    assert html =~ "Second paragraph"
+    assert html =~ "text-base-content/70"
+  end
+
+  test "login_page uses default label when login_label is nil" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <Components.login_page title="Test" login_path="/login" />
+      """)
+
+    assert html =~ "Sign in" || html =~ "Se connecter"
+  end
+
+  test "login_page uses custom login_label" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <Components.login_page title="Test" login_path="/login" login_label="Sign in with Google" />
+      """)
+
+    assert html =~ "Sign in with Google"
+    refute html =~ "Se connecter"
+  end
+
+  test "login_page hides content div when no inner_block" do
+    assigns = %{}
+
+    html =
+      rendered_to_string(~H"""
+      <Components.login_page title="Test" login_path="/login" />
+      """)
+
+    refute html =~ "text-base-content/70"
+  end
+
   test "components are importable without other dependencies" do
     assert function_exported?(EvoPhxKit.Components, :epk_flash, 1)
     assert function_exported?(EvoPhxKit.Components, :flash_group, 1)
     assert function_exported?(EvoPhxKit.Components, :theme_toggle, 1)
+    assert function_exported?(EvoPhxKit.Components, :login_page, 1)
   end
 end

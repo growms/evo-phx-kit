@@ -7,6 +7,7 @@ defmodule EvoPhxKit.Components do
   - `epk_flash/1` — individual flash message with auto-dismiss
   - `flash_group/1` — flash group (info, error, connection/server errors)
   - `theme_toggle/1` — dark/light/system theme toggle
+  - `login_page/1` — full-screen login hero with configurable title and auth path
   """
   use Phoenix.Component
   use Gettext, backend: EvoPhxKit.Gettext
@@ -136,6 +137,33 @@ defmodule EvoPhxKit.Components do
           <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
         </svg>
       </button>
+    </div>
+    """
+  end
+
+  attr :title, :string, required: true, doc: "project name displayed as heading"
+  attr :login_path, :string, required: true, doc: "path to the auth provider"
+  attr :login_label, :string, default: nil, doc: "button label (defaults to gettext)"
+
+  slot :inner_block, doc: "optional content between the title and the button"
+
+  def login_page(assigns) do
+    ~H"""
+    <div class="hero min-h-screen bg-base-200">
+      <div class="hero-content text-center">
+        <div class="max-w-md">
+          <h1 class="text-4xl font-bold">{@title}</h1>
+          <div :if={@inner_block != []} class="py-6 text-base-content/70">
+            {render_slot(@inner_block)}
+          </div>
+          <a href={@login_path} class="btn btn-primary btn-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" /><polyline points="10 17 15 12 10 7" /><line x1="15" x2="3" y1="12" y2="12" />
+            </svg>
+            {@login_label || gettext("Se connecter")}
+          </a>
+        </div>
+      </div>
     </div>
     """
   end

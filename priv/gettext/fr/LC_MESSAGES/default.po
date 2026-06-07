@@ -11,38 +11,43 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n>1);\n"
 
-#: lib/evo_phx_kit/components.ex:74
+#: lib/evo_phx_kit/components.ex:75
 #, elixir-autogen, elixir-format
 msgid "Connexion internet introuvable"
 msgstr ""
 
-#: lib/evo_phx_kit/components.ex:52
+#: lib/evo_phx_kit/components.ex:53
 #, elixir-autogen, elixir-format
 msgid "Fermer"
 msgstr ""
 
-#: lib/evo_phx_kit/components.ex:79
-#: lib/evo_phx_kit/components.ex:93
+#: lib/evo_phx_kit/components.ex:80
+#: lib/evo_phx_kit/components.ex:94
 #, elixir-autogen, elixir-format
 msgid "Tentative de reconnexion"
 msgstr ""
 
-#: lib/evo_phx_kit/components.ex:122
+#: lib/evo_phx_kit/components.ex:123
 #, elixir-autogen, elixir-format
 msgid "Theme clair"
 msgstr ""
 
-#: lib/evo_phx_kit/components.ex:133
+#: lib/evo_phx_kit/components.ex:134
 #, elixir-autogen, elixir-format
 msgid "Theme sombre"
 msgstr ""
 
-#: lib/evo_phx_kit/components.ex:111
+#: lib/evo_phx_kit/components.ex:112
 #, elixir-autogen, elixir-format
 msgid "Theme systeme"
 msgstr ""
 
-#: lib/evo_phx_kit/components.ex:88
+#: lib/evo_phx_kit/components.ex:89
 #, elixir-autogen, elixir-format
 msgid "Une erreur est survenue"
+msgstr ""
+
+#: lib/evo_phx_kit/components.ex:163
+#, elixir-autogen, elixir-format
+msgid "Se connecter"
 msgstr ""
