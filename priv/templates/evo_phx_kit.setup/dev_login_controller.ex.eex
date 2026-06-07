@@ -1,0 +1,66 @@
+defmodule <%= app_module %>Web.DevLoginController do
+  @moduledoc false
+  use <%= app_module %>Web, :controller
+
+  plug EvoPhxKit.Plugs.RequireDevEnv
+
+  def login(conn, %{"email" => email}) when email != "" do
+    case EvoPhxKit.user_provider().get_user_by_email(email) do
+      nil ->
+        conn
+        |> put_resp_content_type("text/html")
+        |> send_resp(200, render_form("User not found: #{email}"))
+
+      user ->
+        session_provider = EvoPhxKit.session_provider()
+        if session_provider, do: session_provider.clear_revoked_session(user.id)
+
+        conn
+        |> put_session(EvoPhxKit.session_user_key(), user.id)
+        |> configure_session(renew: true)
+        |> redirect(to: ~p"/")
+    end
+  end
+
+  def login(conn, _params) do
+    conn
+    |> put_resp_content_type("text/html")
+    |> send_resp(200, render_form(nil))
+  end
+
+  defp render_form(error) do
+    error_html =
+      if error,
+        do: ~s(<p style="color:#f87171;margin-bottom:1rem;">#{Plug.HTML.html_escape(error)}</p>),
+        else: ""
+
+    """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <title>Dev Login</title>
+      <style>
+        body { font-family: system-ui, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #0f172a; color: #e2e8f0; }
+        .box { text-align: center; max-width: 480px; padding: 2rem; }
+        h1 { font-size: 1.5rem; margin-bottom: 1.5rem; }
+        input { width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: #e2e8f0; font-size: 1rem; margin-bottom: 1rem; box-sizing: border-box; }
+        input:focus { outline: none; border-color: #60a5fa; }
+        button { width: 100%; padding: 0.75rem; border-radius: 8px; border: none; background: #3b82f6; color: white; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #2563eb; }
+      </style>
+    </head>
+    <body>
+      <div class="box">
+        <h1>Dev Login</h1>
+        \#{error_html}
+        <form method="get" action="/dev/login">
+          <input type="email" name="email" placeholder="Email" autofocus required />
+          <button type="submit">Se connecter</button>
+        </form>
+      </div>
+    </body>
+    </html>
+    """
+  end
+end

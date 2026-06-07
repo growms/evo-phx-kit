@@ -1,0 +1,65 @@
+# Build stage
+FROM elixir:1.19-otp-28-slim AS build
+
+RUN apt-get update && apt-get install -y git curl npm && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+ENV MIX_ENV=prod
+
+# Install hex + rebar
+RUN mix local.hex --force && mix local.rebar --force
+
+# Copy deps files first for caching
+COPY mix.exs mix.lock ./
+RUN mix deps.get --only $MIX_ENV
+
+# Copy config
+COPY config config
+RUN mix deps.compile
+
+# Copy source
+COPY lib lib
+COPY priv priv
+COPY assets assets
+COPY rel rel
+
+# Install JS dependencies
+RUN cd assets && npm ci
+
+# Compile first (generates colocated hooks JS needed by esbuild)
+RUN mix compile
+
+# Install esbuild + tailwind binaries, then build assets
+RUN mix assets.setup
+RUN mix assets.deploy
+
+# Build release
+RUN mix release
+
+# Runtime stage
+FROM debian:trixie-slim
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends libstdc++6 openssl libncurses6 locales ca-certificates curl && \
+    rm -rf /var/lib/apt/lists/* && \
+    sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
+
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
+
+WORKDIR /app
+
+COPY --from=build /app/_build/prod/rel/<%= app_name %> ./
+
+# Non-root user for runtime
+RUN groupadd -r <%= app_name %> && useradd -r -g <%= app_name %> -d /app -s /usr/sbin/nologin <%= app_name %> && \
+    chown -R <%= app_name %>:<%= app_name %> /app
+USER <%= app_name %>
+
+ENV PHX_SERVER=true
+
+EXPOSE 4000
+
+CMD ["bin/server"]

@@ -1,0 +1,106 @@
+defmodule <%= app_module %>Web.Layouts do
+  @moduledoc """
+  Layout components for the application.
+  """
+  use <%= app_module %>Web, :html
+
+  import EvoPhxKit.Components
+
+  embed_templates "layouts/*"
+
+  attr :flash, :map, required: true, doc: "the map of flash messages"
+
+  attr :current_scope, :map,
+    default: nil,
+    doc: "the current [scope](https://hexdocs.pm/phoenix/scopes.html)"
+
+  slot :nav_items, doc: "navigation items for the sidebar"
+
+  def app(assigns) do
+    ~H"""
+    <div class={[
+      "drawer h-full overflow-hidden grid-rows-[minmax(0,1fr)]",
+      assigns[:current_user] && "sm:drawer-open"
+    ]}>
+      <input id="drawer-toggle" type="checkbox" class="drawer-toggle" />
+      <div class="drawer-content flex flex-col h-full">
+        <%% Mobile-only topbar %>
+        <header class="navbar min-h-12 bg-base-200 px-3 sm:hidden">
+          <label
+            :if={assigns[:current_user]}
+            for="drawer-toggle"
+            class="btn btn-ghost btn-sm"
+            aria-label={gettext("Menu de navigation")}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" />
+            </svg>
+          </label>
+          <div class="flex-1">
+            <a
+              href="/"
+              class="font-semibold text-sm px-2 py-1 rounded-md hover:text-primary transition-colors duration-150"
+            >
+              <%= app_name %>
+            </a>
+          </div>
+        </header>
+
+        <main class="flex-1 min-h-0 overflow-y-auto">
+          {@inner_content}
+        </main>
+
+        <.flash_group flash={@flash} />
+      </div>
+
+      <div :if={assigns[:current_user]} class="drawer-side z-50">
+        <label
+          for="drawer-toggle"
+          aria-label={gettext("Fermer le menu")}
+          class="drawer-overlay"
+        >
+        </label>
+        <nav
+          aria-label={gettext("Navigation principale")}
+          class="menu bg-base-200 min-h-full w-56 p-4 pt-5 flex flex-col"
+        >
+          <div class="mb-4 px-2">
+            <a
+              href="/"
+              class="flex items-center gap-2 font-semibold text-[1.2rem] hover:text-primary transition-colors duration-150"
+            >
+              <%= app_name %>
+            </a>
+          </div>
+          <ul class="space-y-1 flex-1">
+            {render_slot(@nav_items)}
+          </ul>
+          <div class="divider my-1"></div>
+          <ul>
+            <li :if={assigns[:current_user]}>
+              <span class="text-xs opacity-60 flex items-center gap-2 px-2 py-1">
+                {assigns[:current_user].email}
+              </span>
+            </li>
+            <li>
+              <form action={EvoPhxKit.auth_logout_path()} method="post" class="p-0">
+                <input type="hidden" name="_csrf_token" value={Phoenix.Controller.get_csrf_token()} />
+                <button
+                  type="submit"
+                  class="flex items-center gap-2 w-full text-left px-4 py-2 hover:bg-base-300 rounded-lg"
+                  phx-click={Phoenix.LiveView.JS.dispatch("click", to: "#drawer-toggle")}
+                >
+                  {gettext("Deconnexion")}
+                </button>
+              </form>
+            </li>
+          </ul>
+          <div class="mt-2 flex justify-center">
+            <.theme_toggle />
+          </div>
+        </nav>
+      </div>
+    </div>
+    """
+  end
+end
