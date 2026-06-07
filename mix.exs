@@ -25,7 +25,7 @@ defmodule EvoPhxKit.MixProject do
     [
       {:plug, "~> 1.16"},
       {:phoenix_live_view, "~> 1.0"},
-      {:gettext, "~> 0.26"},
+      {:gettext, ">= 0.26.0"},
       {:jason, "~> 1.4"},
       {:igniter, "~> 0.5", optional: true}
     ]
