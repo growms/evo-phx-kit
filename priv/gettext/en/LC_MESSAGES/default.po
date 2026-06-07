@@ -1,0 +1,48 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/evo_phx_kit/components.ex:74
+#, elixir-autogen, elixir-format
+msgid "Connexion internet introuvable"
+msgstr "No internet connection"
+
+#: lib/evo_phx_kit/components.ex:52
+#, elixir-autogen, elixir-format
+msgid "Fermer"
+msgstr "Close"
+
+#: lib/evo_phx_kit/components.ex:79
+#: lib/evo_phx_kit/components.ex:93
+#, elixir-autogen, elixir-format
+msgid "Tentative de reconnexion"
+msgstr "Attempting to reconnect"
+
+#: lib/evo_phx_kit/components.ex:122
+#, elixir-autogen, elixir-format
+msgid "Theme clair"
+msgstr "Light theme"
+
+#: lib/evo_phx_kit/components.ex:133
+#, elixir-autogen, elixir-format
+msgid "Theme sombre"
+msgstr "Dark theme"
+
+#: lib/evo_phx_kit/components.ex:111
+#, elixir-autogen, elixir-format
+msgid "Theme systeme"
+msgstr "System theme"
+
+#: lib/evo_phx_kit/components.ex:88
+#, elixir-autogen, elixir-format
+msgid "Une erreur est survenue"
+msgstr "Something went wrong"
